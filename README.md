@@ -39,4 +39,7 @@
 -   grandchild 페이지 정보(이름, 내용)
 -   grandchild 서브페이지리스트
     grandaSAschilds 중 p_of_grandchild가 child_id와 같은 row들
-    [DB](https://drawsql.app/teams/haksoo-jis-team/diagrams/breadcrumbs)
+
+## 데이터베이스 구조
+
+[DB](https://drawsql.app/teams/haksoo-jis-team/diagrams/breadcrumbs)
