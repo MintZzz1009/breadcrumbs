@@ -10,7 +10,7 @@ router.post('/grandparents', (req, res) => {
     db.query(sql, [name, contents], (error, results, fields) => {
         if (error) throw error;
         console.log(results);
-        return res.json(results);
+        return res.json({ results });
     });
 });
 
@@ -18,19 +18,20 @@ router.post('/grandparents', (req, res) => {
 router.get('/grandparents/:gpId', (req, res) => {
     const { gpId } = req.params;
     const getPage = `SELECT * FROM grandparents WHERE id=?;`;
+    const obj = {};
     let pageInfo, subPageList;
     db.query(getPage, [gpId], (error, results, fields) => {
         if (error) throw error;
-        console.log(results);
-        [pageInfo] = results;
+        obj.pageInfo = results;
+        console.log(obj);
     });
     const getSubPages = `SELECT * FROM parents where p_of_parent=?;`;
     db.query(getSubPages, [gpId], (error, results, fields) => {
         if (error) throw error;
-        console.log(results);
-        subPageList = results;
+        obj.subPageList = results;
+        console.log(obj);
     });
-    return res.status(200).json({ pageInfo, subPageList });
+    return res.json(obj);
 });
 
 // parent 페이지 생성
@@ -49,19 +50,19 @@ router.post('/grandparents/:gpId/parents', (req, res) => {
 router.get('/grandparents/:gpId/parents/:pId', (req, res) => {
     const { gpId, pId } = req.params;
     const getPage = `SELECT * FROM parents WHERE id=?;`;
-    let pageInfo, subPageList;
+    const obj = {};
     db.query(getPage, [pId], (error, results, fields) => {
         if (error) throw error;
-        console.log(results);
-        [pageInfo] = results;
+        obj.pageInfo = results[0];
+        console.log(obj);
     });
-    const getSubPages = `SELECT * FROM childs where p_of_childs=?;`;
+    const getSubPages = `SELECT * FROM childs where p_of_child=?;`;
     db.query(getSubPages, [pId], (error, results, fields) => {
         if (error) throw error;
-        console.log(results);
-        subPageList = results;
+        obj.subPageList = results;
+        console.log(obj);
     });
-    return res.status(200).json({ pageInfo, subPageList });
+    return res.json(obj);
 });
 
 // child 페이지 생성
@@ -84,19 +85,19 @@ router.post('/grandparents/:gpId/parents/:pId/childs', (req, res) => {
 router.get('/grandparents/:gpId/parents/:pId/childs/:cId', (req, res) => {
     const { gpId, pId, cId } = req.params;
     const getPage = `SELECT * FROM childs WHERE id=?;`;
-    let pageInfo, subPageList;
+    const obj = {};
     db.query(getPage, [cId], (error, results, fields) => {
         if (error) throw error;
         console.log(results);
-        [pageInfo] = results;
+        obj.pageInfo = results;
     });
-    const getSubPages = `SELECT * FROM grandchilds where p_of_grandchilds=?;`;
+    const getSubPages = `SELECT * FROM grandchilds where p_of_grandchild=?;`;
     db.query(getSubPages, [cId], (error, results, fields) => {
         if (error) throw error;
         console.log(results);
-        subPageList = results;
+        obj.subPageList = results;
     });
-    return res.status(200).json({ pageInfo, subPageList });
+    return res.json(obj);
 });
 
 // grandchild 페이지 생성
@@ -134,13 +135,13 @@ router.get(
     (req, res) => {
         const { gpId, pId, cId, gcId } = req.params;
         const getPage = `SELECT * FROM grandchilds WHERE id=?;`;
-        let pageInfo;
+        const obj = {};
         db.query(getPage, [gcId], (error, results, fields) => {
             if (error) throw error;
             console.log(results);
-            [pageInfo] = results;
+            obj.pageInfo = results;
         });
-        return res.status(200).json({ pageInfo });
+        return res.json(obj);
     }
 );
 
